@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Quản Lý Khuyến Mãi</title>
+</head>
+<body>
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Danh Sách Khuyến Mãi</h1>
+
+    <!-- Thêm Khuyến Mãi -->
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary" type="button" onclick="window.location.href='/discounts/create'">Thêm Khuyến Mãi</button>
+        <form action="/discounts" method="get" class="d-flex">
+            <input type="text" name="query" class="form-control me-2" placeholder="Tìm kiếm tiêu đề, mức giá hoặc ngày" th:value="${query}">
+            <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
+        </form>
+    </div>
+
+    <!-- Bảng Danh Sách -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-primary text-center">
+        <tr>
+            <th>Tiêu Đề</th>
+            <th>Thời Gian Bắt Đầu</th>
+            <th>Thời Gian Kết Thúc</th>
+            <th>Mức Giảm Giá</th>
+            <th>Chi Tiết</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="discount : ${discounts}">
+            <td th:text="${discount.name}"></td>
+            <td th:text="${discount.startDate}"></td>
+            <td th:text="${discount.endDate}"></td>
+            <td th:text="${discount.discountPrice}"></td>
+            <td th:text="${discount.description}"></td>
+            <td class="text-center">
+                <form th:action="@{/discounts/{id}/edit(id=${discount.id})}" method="get" style="display:inline;">
+                    <button type="submit" class="btn btn-warning btn-sm">Sửa</button>
+                </form>
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                        th:attr="data-bs-target=${'#deleteModal-' + discount.id}">Xóa</button>
+
+                <!-- Modal xác nhận xóa -->
+                <div class="modal fade" th:id="'deleteModal-' + ${discount.id}" tabindex="-1" aria-labelledby="modalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Xác nhận xóa</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Bạn có chắc chắn muốn xóa khuyến mãi <strong th:text="${discount.name}"></strong> không?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                <form th:action="@{/discounts/{id}/delete(id=${discount.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Chỉnh Sửa Giảm Giá</title>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h3 class="text-center mb-4">Thêm mã Giảm Giá</h3>
+            <div class="mb-3 text-end">
+                <a th:href="@{/discounts}" class="btn btn-secondary">Quay lại danh sách</a>
+            </div>
+            <div class="card shadow">
+                <div class="card-body">
+                    <form th:action="@{/discounts/create}" th:object="${discount}" method="POST" novalidate="novalidate">
+                        <input type="hidden" th:field="*{id}"/>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tên Giảm Giá</label>
+                            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Nhập tên giảm giá" required/>
+                            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="startDate" class="form-label">Ngày Bắt Đầu</label>
+                            <input type="date" id="startDate" th:field="*{startDate}" class="form-control" required/>
+                            <div class="text-danger" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="endDate" class="form-label">Ngày Kết Thúc</label>
+                            <input type="date" id="endDate" th:field="*{endDate}" class="form-control" required/>
+                            <div class="text-danger" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="discountPrice" class="form-label">Mức Giảm Giá (VND)</label>
+                            <input type="number" id="discountPrice" th:field="*{discountPrice}" class="form-control" placeholder="Nhập mức giảm giá" required/>
+                            <div class="text-danger" th:if="${#fields.hasErrors('discountPrice')}" th:errors="*{discountPrice}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Mô Tả</label>
+                            <textarea id="description" th:field="*{description}" class="form-control" placeholder="Nhập mô tả giảm giá"></textarea>
+                            <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Lưu</button>
+                            <a th:href="@{/discounts}" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
