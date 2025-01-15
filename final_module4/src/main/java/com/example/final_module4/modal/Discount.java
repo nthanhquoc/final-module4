@@ -25,8 +25,10 @@ public class Discount {
     @Column(name = "name_discount", columnDefinition = "VARCHAR(100)", nullable = false)
     private String name;
 
+    @NotNull(message = "Ngày bắt đầu không được để trống")
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
+    @NotNull(message = "Ngày kết thúc không được để trống")
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
@@ -37,4 +39,12 @@ public class Discount {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @AssertTrue(message = "Ngày kết thúc phải lớn hơn ngày bắt đầu ít nhất 1 ngày")
+    public boolean isEndDateAfterStartDate() {
+        if (startDate == null || endDate == null) {
+            return true;
+        }
+        return endDate.isAfter(startDate);
+    }
 }
