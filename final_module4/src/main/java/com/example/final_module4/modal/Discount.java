@@ -40,11 +40,12 @@ public class Discount {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @AssertTrue(message = "Ngày kết thúc phải lớn hơn ngày bắt đầu ít nhất 1 ngày")
-    public boolean isEndDateAfterStartDate() {
+    @AssertTrue(message = "Ngày bắt đầu phải từ hôm nay trở đi và ngày kết thúc phải lớn hơn ngày bắt đầu ít nhất 1 ngày")
+    public boolean isStartDateAndEndDateValid() {
         if (startDate == null || endDate == null) {
             return true;
         }
-        return endDate.isAfter(startDate);
+        LocalDate today = LocalDate.now();
+        return !startDate.isBefore(today) && endDate.isAfter(startDate);
     }
 }
