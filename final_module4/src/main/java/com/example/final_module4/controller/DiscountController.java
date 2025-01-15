@@ -5,6 +5,7 @@ import com.example.final_module4.service.IDiscountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +24,40 @@ public class DiscountController {
     @Autowired
     private IDiscountService discountService;
     @GetMapping("")
-    public ModelAndView viewAllBlog(Model model,
-                                    @RequestParam(defaultValue = "") String title,
-                                    @RequestParam(defaultValue = "0") int page) {
-        model.addAttribute("title", title);
-        return new ModelAndView("list", "discounts", discountService.findByTitle(title, page));
+    public ModelAndView searchDiscounts(
+            Model model,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) Double discountPrice,
+            @RequestParam(defaultValue = "0") int page) {
+
+        LocalDate parsedStartDate = null;
+        LocalDate parsedEndDate = null;
+
+        // Kiểm tra và parse startDate
+        if (startDate != null && !startDate.isBlank()) {
+            try {
+                parsedStartDate = LocalDate.parse(startDate);
+            } catch (DateTimeParseException e) {
+                model.addAttribute("error", "Ngày bắt đầu không hợp lệ");
+                return new ModelAndView("list", "discounts", List.of());
+            }
+        }
+
+        // Kiểm tra và parse endDate
+        if (endDate != null && !endDate.isBlank()) {
+            try {
+                parsedEndDate = LocalDate.parse(endDate);
+            } catch (DateTimeParseException e) {
+                model.addAttribute("error", "Ngày kết thúc không hợp lệ");
+                return new ModelAndView("list", "discounts", List.of());
+            }
+        }
+
+        List<Discount> discounts = discountService.search(parsedStartDate, parsedEndDate, discountPrice, page);
+        return new ModelAndView("list", "discounts", discounts);
     }
+
     @GetMapping("/create")
     public String viewAddBlog(Model model) {
         model.addAttribute("discount", new Discount());
